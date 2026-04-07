@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">I-Sobot BT Controller</string>
+    <string name="subtitle">Connect to the HC-05 module and send the same command numbers used by the Arduino sketch.</string>
+    <string name="hero_copy">Fast controls stay at the top, while the command browser below lets you search every move, gesture, and demo routine from the Arduino firmware.</string>
+    <string name="paired_devices">Paired Bluetooth devices</string>
+    <string name="quick_controls">Quick movement controls</string>
+    <string name="all_commands">Full command catalog</string>
+    <string name="refresh">Refresh</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="send">Send</string>
+    <string name="search_hint">Search by number, label, or code name</string>
+    <string name="filter_all">All</string>
+    <string name="filter_movement">Movement</string>
+    <string name="filter_combat">Combat</string>
+    <string name="filter_social">Social</string>
+    <string name="filter_showcase">Showcase</string>
+    <string name="no_matching_commands">No commands match this filter.</string>
+    <string name="command_count">%1$d commands</string>
+    <string name="command_details">%1$s • %2$s</string>
+    <string name="no_paired_devices">No paired devices found</string>
+    <string name="unknown_device">Unknown device</string>
+    <string name="status_idle">Waiting for a paired HC-05 device.</string>
+    <string name="status_bluetooth_unavailable">This phone does not support Bluetooth Classic.</string>
+    <string name="status_enable_bluetooth">Enable Bluetooth, then refresh the paired devices list.</string>
+    <string name="status_no_devices">No paired devices are currently available.</string>
+    <string name="status_devices_loaded">Loaded %1$d paired device(s).</string>
+    <string name="status_connecting">Connecting to %1$s…</string>
+    <string name="status_connected">Connected to %1$s.</string>
+    <string name="status_connection_failed">Connection failed: %1$s</string>
+    <string name="status_disconnected">Disconnected.</string>
+    <string name="status_not_connected">Connect to the HC-05 device first.</string>
+    <string name="status_sent">Sent command %1$d: %2$s</string>
+    <string name="status_send_failed">Send failed: %1$s</string>
+</resources>

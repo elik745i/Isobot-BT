@@ -1,0 +1,12 @@
+/.gradle/
+/.tools/
+/.signing/
+/build/
+
+Android/.gradle/
+Android/.tools/
+Android/.signing/
+Android/build/
+Android/app/build/
+Android/keystore.properties
+Android/local.properties

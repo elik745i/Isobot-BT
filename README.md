@@ -1,5 +1,7 @@
 # Isobot-BT
 
+![BT-SOBOT mod v1](docs/images/bt-sobot-mod-v1-left.jpeg)
+
 This is sketch and libraries for Arduino Nano v3: https://www.aliexpress.com/item/32714947583.html?spm=a2g0o.productlist.0.0.405cd8828XKa1p&algo_pvid=d5acb32c-9e68-486c-9ca1-a061c698f223&algo_expid=d5acb32c-9e68-486c-9ca1-a061c698f223-0&btsid=0b0a556e16086289564812820e28d6&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_
 
 BT module -  HC-05: https://www.aliexpress.com/item/32990347631.html?spm=a2g0o.productlist.0.0.6c79684fOQjVLp&algo_pvid=1c5ce035-6a55-470d-a332-4e84a76d1614&algo_expid=1c5ce035-6a55-470d-a332-4e84a76d1614-2&btsid=0b0a555f16086288928425414e2b6b&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_
@@ -16,3 +18,27 @@ For front cover 3D model (STL file) go to: https://www.thingiverse.com/thing:469
 Video demonstration of the modified fully functional robot: https://www.youtube.com/watch?v=bPYBV43UScA
 
 Control is done by sending command over BT serial: 0 to 138
+
+## Android controller app
+
+This repository now also contains a native Android app project in `Android/` that connects to the HC-05 module over classic Bluetooth SPP and sends the same command indices used by the Arduino sketch.
+
+### What the app does
+
+- lists already paired Bluetooth devices
+- connects to the HC-05 serial profile
+- provides quick movement buttons for commands 0 to 11
+- exposes the full command catalog 0 to 138 from the sketch
+- includes a searchable categorized GUI for movement, combat, social, and showcase commands
+
+### Build notes
+
+- open the `Android/` folder as an Android Studio project, or run the Gradle wrapper from inside `Android/`
+- pair the phone with the HC-05 module first in Android Bluetooth settings
+- once connected in the app, each button sends the command number followed by a newline, which matches the Arduino sketch's serial input handling
+- release builds read signing values from `Android/keystore.properties` or from `ISOBOT_*` environment variables
+
+### Repository release asset
+
+- the signed Android release APK is published through the repository's GitHub Releases section
+- build output path after a local release build: `Android/app/build/outputs/apk/release/app-release.apk`
