@@ -31,16 +31,21 @@ Android project:
 `Android/`
 
 Current Android release line:
-`v1.1.0`
+`v1.2.0`
 
 Highlights:
 
-- paired HC-05 device picker
-- quick controls and full command catalog
+- Bluetooth device picker moved into Settings
+- saved channel A / B selection
+- saved System / Light / Dark appearance selection
+- fixed top connection bar with live status indicator
+- accordion-style quick controls, remote control mode, and full command catalog
+- direct remote-control panel for movement, head, body, arms, and legs
 - categorized search/filter UI
 - bundled 3D robot preview
 - bundled in-app PDF manual viewer for `Actions.pdf` and `Service_Manual.pdf`
 - settings menu with T-pose servo-adjust action
+- T-pose debug tools used to confirm the working remote-control sequence
 - phone-friendly stacked layout and larger launcher icon
 
 ## Build Notes
@@ -62,10 +67,17 @@ Arduino:
 
 - pair the phone with the HC-05 first in Android Bluetooth settings
 - install the matching Android APK and Arduino firmware together
-- the Android T-pose action requires the updated firmware because it uses the `RAW:` serial path
+- the Android T-pose action now enters remote-control mode first, then sends the confirmed zero-position command on the selected channel
+- release APK name for publishing:
+  `BT-SOBOT.apk`
 
 ## Release History
 
+- `v1.2.0`
+  - moved Bluetooth controls into Settings and added saved channel selection
+  - added saved System / Light / Dark appearance mode
+  - added fixed top connection bar and accordion-style main sections
+  - added direct remote-control panel and confirmed T-pose sequence
 - `v1.1.0`
   - Android controller polish pass with embedded manuals, 3D preview, responsive layout, settings menu, and T-pose support
   - firmware updated to accept `RAW:<ir-code>` messages for service actions

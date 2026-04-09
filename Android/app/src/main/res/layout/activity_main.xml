@@ -1,10 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/app_background"
-    android:fillViewport="true">
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_bar_background"
+        android:elevation="6dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingTop="12dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/app_name"
+            android:textColor="@color/ink"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/connectionIndicator"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:background="@drawable/connection_indicator_background" />
+
+            <TextView
+                android:id="@+id/connectionStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/connection_state_idle"
+                android:textColor="@color/ink"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/settingsButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/settings"
+            android:padding="10dp"
+            android:src="@android:drawable/ic_menu_manage"
+            app:tint="@color/ink" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,37 +75,9 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/titleText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/app_name"
-                android:textColor="@color/ink"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <ImageButton
-                android:id="@+id/settingsButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/settings"
-                android:padding="10dp"
-                android:src="@android:drawable/ic_menu_manage"
-                app:tint="@color/ink" />
-        </LinearLayout>
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
             android:text="@string/subtitle"
             android:textColor="@color/ink_muted"
             android:textSize="15sp" />
@@ -105,43 +140,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/paired_devices"
+                android:text="@string/section_status"
                 android:textColor="@color/ink"
                 android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/deviceSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="@color/accent" />
-
-            <Button
-                android:id="@+id/refreshDevicesButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/refresh" />
-
-            <Button
-                android:id="@+id/connectButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/connect" />
-
-            <Button
-                android:id="@+id/disconnectButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/disconnect" />
 
             <TextView
                 android:id="@+id/statusText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/status_background"
                 android:padding="12dp"
                 android:text="@string/status_idle"
@@ -157,34 +164,262 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/quickSectionToggle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/quick_controls"
-                android:textColor="@color/ink"
-                android:textStyle="bold" />
+                android:contentDescription="@string/section_expand"
+                android:gravity="start|center_vertical"
+                android:text="@string/section_quick_controls"
+                android:textAllCaps="false" />
 
-            <GridLayout
+            <LinearLayout
+                android:id="@+id/quickSectionContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:columnCount="2"
-                android:rowCount="6"
-                android:useDefaultMargins="true">
+                android:orientation="vertical"
+                android:visibility="gone">
 
-                <Button android:id="@+id/quickForward" style="@style/Widget.Isobot.QuickButton" />
-                <Button android:id="@+id/quickBackward" style="@style/Widget.Isobot.QuickButton" />
-                <Button android:id="@+id/quickSideRight" style="@style/Widget.Isobot.QuickButton" />
-                <Button android:id="@+id/quickSideLeft" style="@style/Widget.Isobot.QuickButton" />
-                <Button android:id="@+id/quickForwardLeft" style="@style/Widget.Isobot.QuickButton" />
-                <Button android:id="@+id/quickForwardRight" style="@style/Widget.Isobot.QuickButton" />
-                <Button android:id="@+id/quickBackwardLeft" style="@style/Widget.Isobot.QuickButton" />
-                <Button android:id="@+id/quickBackwardRight" style="@style/Widget.Isobot.QuickButton" />
-                <Button android:id="@+id/quickForwardClockwise" style="@style/Widget.Isobot.QuickButton" />
-                <Button android:id="@+id/quickForwardCounter" style="@style/Widget.Isobot.QuickButton" />
-                <Button android:id="@+id/quickBackwardClockwise" style="@style/Widget.Isobot.QuickButton" />
-                <Button android:id="@+id/quickBackwardCounter" style="@style/Widget.Isobot.QuickButton" />
-            </GridLayout>
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:rowCount="6"
+                    android:useDefaultMargins="true">
+
+                    <Button android:id="@+id/quickForward" style="@style/Widget.Isobot.QuickButton" />
+                    <Button android:id="@+id/quickBackward" style="@style/Widget.Isobot.QuickButton" />
+                    <Button android:id="@+id/quickSideRight" style="@style/Widget.Isobot.QuickButton" />
+                    <Button android:id="@+id/quickSideLeft" style="@style/Widget.Isobot.QuickButton" />
+                    <Button android:id="@+id/quickForwardLeft" style="@style/Widget.Isobot.QuickButton" />
+                    <Button android:id="@+id/quickForwardRight" style="@style/Widget.Isobot.QuickButton" />
+                    <Button android:id="@+id/quickBackwardLeft" style="@style/Widget.Isobot.QuickButton" />
+                    <Button android:id="@+id/quickBackwardRight" style="@style/Widget.Isobot.QuickButton" />
+                    <Button android:id="@+id/quickForwardClockwise" style="@style/Widget.Isobot.QuickButton" />
+                    <Button android:id="@+id/quickForwardCounter" style="@style/Widget.Isobot.QuickButton" />
+                    <Button android:id="@+id/quickBackwardClockwise" style="@style/Widget.Isobot.QuickButton" />
+                    <Button android:id="@+id/quickBackwardCounter" style="@style/Widget.Isobot.QuickButton" />
+                </GridLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/panel_background"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <Button
+                android:id="@+id/remoteSectionToggle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/section_expand"
+                android:gravity="start|center_vertical"
+                android:text="@string/section_remote_mode"
+                android:textAllCaps="false" />
+
+            <LinearLayout
+                android:id="@+id/remoteSectionContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/remoteModeHintText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/remote_mode_hint"
+                    android:textColor="@color/ink_muted"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/remote_pad_title"
+                    android:textColor="@color/ink"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/remoteUpButton"
+                        android:layout_width="88dp"
+                        android:layout_height="56dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="@string/remote_up"
+                        android:textAllCaps="false"
+                        android:textSize="22sp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/remoteLeftButton"
+                            android:layout_width="88dp"
+                            android:layout_height="56dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:text="@string/remote_left"
+                            android:textAllCaps="false"
+                            android:textSize="22sp" />
+
+                        <Space
+                            android:layout_width="18dp"
+                            android:layout_height="1dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/remoteRightButton"
+                            android:layout_width="88dp"
+                            android:layout_height="56dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:text="@string/remote_right"
+                            android:textAllCaps="false"
+                            android:textSize="22sp" />
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/remoteDownButton"
+                        android:layout_width="88dp"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="10dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="@string/remote_down"
+                        android:textAllCaps="false"
+                        android:textSize="22sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/remote_head_title"
+                    android:textColor="@color/ink"
+                    android:textStyle="bold" />
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:columnCount="2"
+                    android:useDefaultMargins="true">
+
+                    <Button
+                        android:id="@+id/remoteHeadLeftButton"
+                        style="@style/Widget.Isobot.QuickButton"
+                        android:text="@string/remote_head_left" />
+
+                    <Button
+                        android:id="@+id/remoteHeadRightButton"
+                        style="@style/Widget.Isobot.QuickButton"
+                        android:text="@string/remote_head_right" />
+                </GridLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/remote_body_title"
+                    android:textColor="@color/ink"
+                    android:textStyle="bold" />
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:columnCount="2"
+                    android:useDefaultMargins="true">
+
+                    <Button
+                        android:id="@+id/remoteLeanForwardButton"
+                        style="@style/Widget.Isobot.QuickButton"
+                        android:text="@string/remote_lean_forward" />
+
+                    <Button
+                        android:id="@+id/remoteLeanBackButton"
+                        style="@style/Widget.Isobot.QuickButton"
+                        android:text="@string/remote_lean_back" />
+                </GridLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/remote_arms_title"
+                    android:textColor="@color/ink"
+                    android:textStyle="bold" />
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:columnCount="2"
+                    android:useDefaultMargins="true">
+
+                    <Button
+                        android:id="@+id/remoteLeftArmButton"
+                        style="@style/Widget.Isobot.QuickButton"
+                        android:text="@string/remote_left_punch" />
+
+                    <Button
+                        android:id="@+id/remoteRightArmButton"
+                        style="@style/Widget.Isobot.QuickButton"
+                        android:text="@string/remote_right_punch" />
+
+                    <Button
+                        android:id="@+id/remoteLeftGuardButton"
+                        style="@style/Widget.Isobot.QuickButton"
+                        android:text="@string/remote_left_guard" />
+
+                    <Button
+                        android:id="@+id/remoteRightGuardButton"
+                        style="@style/Widget.Isobot.QuickButton"
+                        android:text="@string/remote_right_guard" />
+                </GridLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/remote_legs_title"
+                    android:textColor="@color/ink"
+                    android:textStyle="bold" />
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:columnCount="2"
+                    android:useDefaultMargins="true">
+
+                    <Button
+                        android:id="@+id/remoteLeftLegButton"
+                        style="@style/Widget.Isobot.QuickButton"
+                        android:text="@string/remote_left_kick" />
+
+                    <Button
+                        android:id="@+id/remoteRightLegButton"
+                        style="@style/Widget.Isobot.QuickButton"
+                        android:text="@string/remote_right_kick" />
+                </GridLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -196,19 +431,22 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <LinearLayout
+            <Button
+                android:id="@+id/catalogSectionToggle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:contentDescription="@string/section_expand"
+                android:gravity="start|center_vertical"
+                android:text="@string/section_command_catalog"
+                android:textAllCaps="false" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/all_commands"
-                    android:textColor="@color/ink"
-                    android:textStyle="bold" />
+            <LinearLayout
+                android:id="@+id/catalogSectionContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/commandCount"
@@ -221,87 +459,88 @@
                     android:paddingBottom="6dp"
                     android:textColor="@color/ink"
                     android:textStyle="bold" />
-            </LinearLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="@string/search_hint"
-                app:boxBackgroundMode="outline"
-                app:boxStrokeColor="@color/accent"
-                app:hintTextColor="@color/accent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/searchField"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginTop="12dp"
+                    android:hint="@string/search_hint"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="@color/accent"
+                    app:hintTextColor="@color/accent">
 
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:scrollbars="none">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/searchField"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="12dp"
+                    android:scrollbars="none">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/filterAll"
-                        style="@style/Widget.Isobot.FilterButton"
-                        android:checkable="true"
-                        android:text="@string/filter_all" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/filterMovement"
-                        style="@style/Widget.Isobot.FilterButton"
-                        android:layout_marginStart="8dp"
-                        android:checkable="true"
-                        android:text="@string/filter_movement" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/filterAll"
+                            style="@style/Widget.Isobot.FilterButton"
+                            android:checkable="true"
+                            android:text="@string/filter_all" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/filterCombat"
-                        style="@style/Widget.Isobot.FilterButton"
-                        android:layout_marginStart="8dp"
-                        android:checkable="true"
-                        android:text="@string/filter_combat" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/filterMovement"
+                            style="@style/Widget.Isobot.FilterButton"
+                            android:layout_marginStart="8dp"
+                            android:checkable="true"
+                            android:text="@string/filter_movement" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/filterSocial"
-                        style="@style/Widget.Isobot.FilterButton"
-                        android:layout_marginStart="8dp"
-                        android:checkable="true"
-                        android:text="@string/filter_social" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/filterCombat"
+                            style="@style/Widget.Isobot.FilterButton"
+                            android:layout_marginStart="8dp"
+                            android:checkable="true"
+                            android:text="@string/filter_combat" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/filterShowcase"
-                        style="@style/Widget.Isobot.FilterButton"
-                        android:layout_marginStart="8dp"
-                        android:checkable="true"
-                        android:text="@string/filter_showcase" />
-                </LinearLayout>
-            </HorizontalScrollView>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/filterSocial"
+                            style="@style/Widget.Isobot.FilterButton"
+                            android:layout_marginStart="8dp"
+                            android:checkable="true"
+                            android:text="@string/filter_social" />
 
-            <TextView
-                android:id="@+id/emptyCommandsText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="@string/no_matching_commands"
-                android:textColor="@color/ink_muted"
-                android:visibility="gone" />
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/filterShowcase"
+                            style="@style/Widget.Isobot.FilterButton"
+                            android:layout_marginStart="8dp"
+                            android:checkable="true"
+                            android:text="@string/filter_showcase" />
+                    </LinearLayout>
+                </HorizontalScrollView>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/commandRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:nestedScrollingEnabled="false"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                <TextView
+                    android:id="@+id/emptyCommandsText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/no_matching_commands"
+                    android:textColor="@color/ink_muted"
+                    android:visibility="gone" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/commandRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:nestedScrollingEnabled="false"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</LinearLayout>

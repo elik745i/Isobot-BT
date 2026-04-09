@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="paper">#0F141B</color>
+    <color name="panel">#171D25</color>
+    <color name="sand">#2C3642</color>
+    <color name="accent">#7FB3FF</color>
+    <color name="ink">#F3F6FB</color>
+    <color name="ink_muted">#AAB4C4</color>
+    <color name="status_fill">#222B36</color>
+    <color name="top_bar">#111821</color>
+    <color name="top_bar_stroke">#2A3542</color>
+    <color name="indicator_idle">#7C8595</color>
+    <color name="indicator_connecting">#E4B64C</color>
+    <color name="indicator_connected">#46C266</color>
+    <color name="indicator_error">#F06449</color>
+</resources>

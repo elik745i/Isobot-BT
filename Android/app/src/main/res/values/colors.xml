@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="paper">#F4F0E8</color>
-    <color name="panel">#FFFDF8</color>
-    <color name="sand">#E8DCC4</color>
-    <color name="accent">#A23B2A</color>
-    <color name="ink">#1F2430</color>
-    <color name="ink_muted">#5D6470</color>
-    <color name="status_fill">#F1E4C9</color>
+    <color name="paper">#F4F8FF</color>
+    <color name="panel">#FFFFFF</color>
+    <color name="sand">#D6E6FF</color>
+    <color name="accent">#2563EB</color>
+    <color name="ink">#14213D</color>
+    <color name="ink_muted">#66758C</color>
+    <color name="status_fill">#EAF2FF</color>
+    <color name="top_bar">#FFFFFF</color>
+    <color name="top_bar_stroke">#D6E6FF</color>
+    <color name="indicator_idle">#7C8595</color>
+    <color name="indicator_connecting">#D89B1D</color>
+    <color name="indicator_connected">#2F9E44</color>
+    <color name="indicator_error">#C23B22</color>
 </resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="8dp">
+
+    <Spinner
+        android:id="@+id/bluetoothSettingsSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/accent" />
+
+    <Button
+        android:id="@+id/bluetoothSettingsRefreshButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/refresh" />
+
+    <Button
+        android:id="@+id/bluetoothSettingsConnectButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/connect" />
+
+    <Button
+        android:id="@+id/bluetoothSettingsDisconnectButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/disconnect" />
+
+    <TextView
+        android:id="@+id/bluetoothSettingsStatusText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/status_background"
+        android:padding="12dp"
+        android:text="@string/status_idle"
+        android:textColor="@color/ink"
+        android:textSize="14sp" />
+
+</LinearLayout>

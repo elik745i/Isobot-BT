@@ -142,8 +142,6 @@
 #define randomperformance2  629504
  */
 
-#define tposecalibration 786876  // Inferred from original remote service sequence 4,4,4,B.
- 
 #include <Isobot.h>
 #include <SoftwareSerial.h>
 
@@ -151,6 +149,17 @@ Isobot bot(5);      //IR transmitter hooked to D5
 unsigned long time1, time2;
 String data0;
 String data1;
+
+// i-SOBOT protocol helpers for service-mode commands.
+// These are generated from command bytes so we can reproduce the original
+// remote's maintenance flows exactly instead of relying on captured integers.
+const byte ISOBOT_CHANNEL_A = 0;
+const byte ISOBOT_CHANNEL_B = 1;
+const byte ISOBOT_TYPE_COMMAND = 1;
+const byte ISOBOT_TYPE1_PARAM = 0x03;
+const byte CMD_REMOTE_CONTROL = 0x07;
+const byte CMD_HOME_POSITION = 0xD5;
+const byte CMD_ZERO_POSITION = 0xCA;  // 4,4,4,B from the service manual
 
 unsigned long Code[] = {
   forward,                                  // 0
@@ -209,7 +218,7 @@ unsigned long Code[] = {
   upblock, 
   splits2, 
   comboblock, 
-  zero,  
+  zero,                                  // 56 = zero position / T-pose from remote sequence 4,4,4,B
   homeposition, 
   soundoff, 
   affirm,  
@@ -291,8 +300,7 @@ unsigned long Code[] = {
   mystery1, 
   pose3, 
   pose2, 
-  pose1,
-  tposecalibration };                   // 139
+  pose1 };                              // 138
 
 SoftwareSerial mySerial(3, 4); // указываем пины rx и tx соответственно
 
@@ -310,8 +318,48 @@ void loop() {
 serialCommand();
 }
 
+byte computeChecksum(byte header, byte cmd1, byte cmd2, byte cmd3) {
+  byte sum = header + cmd1 + cmd2 + cmd3;
+  sum = (sum & 7) + ((sum >> 3) & 7) + ((sum >> 6) & 7);
+  return sum & 7;
+}
+
+byte makeHeader(byte channel, byte messageType) {
+  byte header = (channel << 5) | (messageType << 3);
+  return header | computeChecksum(header, 0, 0, 0);
+}
+
+unsigned long makeTwoByteCommand(byte channel, byte command, byte parameter = ISOBOT_TYPE1_PARAM) {
+  byte headerBase = (channel << 5) | (ISOBOT_TYPE_COMMAND << 3);
+  byte header = headerBase | computeChecksum(headerBase, command, parameter, 0);
+  unsigned long message = header;
+  message <<= 8;
+  message |= command;
+  message <<= 8;
+  message |= parameter;
+  return message;
+}
+
+void sendServiceCommand(byte channel, byte command, byte parameter = ISOBOT_TYPE1_PARAM, int repeats = 1) {
+  unsigned long message = makeTwoByteCommand(channel, command, parameter);
+  Serial.println(message);
+  bot.buttonwrite(message, repeats);
+}
+
+void sendZeroPositionSequence() {
+  Serial.println(F("Zero position: channel A RC -> 444B"));
+  sendServiceCommand(ISOBOT_CHANNEL_A, CMD_REMOTE_CONTROL, ISOBOT_TYPE1_PARAM, 1);
+  delay(400);
+  sendServiceCommand(ISOBOT_CHANNEL_A, CMD_ZERO_POSITION, ISOBOT_TYPE1_PARAM, 2);
+}
+
 void sendIndexedCommand(byte index) {
-  if (index > 139) {
+  if (index > 138) {
+    return;
+  }
+
+  if (index == 56) {
+    sendZeroPositionSequence();
     return;
   }
 
@@ -331,6 +379,52 @@ void sendRawCommand(unsigned long rawCode) {
   bot.buttonwrite(rawCode, 3);
 }
 
+void handleDebugCommand(String debugCommand) {
+  debugCommand.trim();
+
+  if (debugCommand == "HOME") {
+    Serial.println(F("Debug: HOME"));
+    Serial.println(homeposition);
+    bot.buttonwrite(homeposition, 1);
+    return;
+  }
+
+  if (debugCommand == "RCA") {
+    Serial.println(F("Debug: channel A RC"));
+    sendServiceCommand(ISOBOT_CHANNEL_A, CMD_REMOTE_CONTROL, ISOBOT_TYPE1_PARAM, 1);
+    return;
+  }
+
+  if (debugCommand == "ZEROA") {
+    Serial.println(F("Debug: channel A 444B"));
+    sendServiceCommand(ISOBOT_CHANNEL_A, CMD_ZERO_POSITION, ISOBOT_TYPE1_PARAM, 2);
+    return;
+  }
+
+  if (debugCommand == "LEGACY") {
+    Serial.println(F("Debug: legacy zero"));
+    Serial.println(zero);
+    bot.buttonwrite(zero, 2);
+    return;
+  }
+
+  if (debugCommand == "RCB") {
+    Serial.println(F("Debug: channel B RC"));
+    sendServiceCommand(ISOBOT_CHANNEL_B, CMD_REMOTE_CONTROL, ISOBOT_TYPE1_PARAM, 1);
+    return;
+  }
+
+  if (debugCommand == "ZEROB") {
+    Serial.println(F("Debug: channel B 444B"));
+    sendServiceCommand(ISOBOT_CHANNEL_B, CMD_ZERO_POSITION, ISOBOT_TYPE1_PARAM, 2);
+    return;
+  }
+
+  if (debugCommand == "FULL") {
+    sendZeroPositionSequence();
+  }
+}
+
 void handleIncomingCommand(String data) {
   data.trim();
   if (data.length() == 0) {
@@ -342,6 +436,11 @@ void handleIncomingCommand(String data) {
     if (rawCode > 0) {
       sendRawCommand(rawCode);
     }
+    return;
+  }
+
+  if (data.startsWith("TPDBG:")) {
+    handleDebugCommand(data.substring(6));
     return;
   }
 
