@@ -141,6 +141,8 @@
 #define western        1022208
 #define randomperformance2  629504
  */
+
+#define tposecalibration 786876  // Inferred from original remote service sequence 4,4,4,B.
  
 #include <Isobot.h>
 #include <SoftwareSerial.h>
@@ -289,7 +291,8 @@ unsigned long Code[] = {
   mystery1, 
   pose3, 
   pose2, 
-  pose1 };                              // 138
+  pose1,
+  tposecalibration };                   // 139
 
 SoftwareSerial mySerial(3, 4); // указываем пины rx и tx соответственно
 
@@ -307,6 +310,45 @@ void loop() {
 serialCommand();
 }
 
+void sendIndexedCommand(byte index) {
+  if (index > 139) {
+    return;
+  }
+
+  if (index <= 11) {
+    for (byte k = 0; k < 5; k++) {
+      Serial.println(Code[index]);
+      bot.buttonwrite(Code[index], 3);
+    }
+  } else {
+    Serial.println(Code[index]);
+    bot.buttonwrite(Code[index], 3);
+  }
+}
+
+void sendRawCommand(unsigned long rawCode) {
+  Serial.println(rawCode);
+  bot.buttonwrite(rawCode, 3);
+}
+
+void handleIncomingCommand(String data) {
+  data.trim();
+  if (data.length() == 0) {
+    return;
+  }
+
+  if (data.startsWith("RAW:")) {
+    unsigned long rawCode = strtoul(data.substring(4).c_str(), NULL, 10);
+    if (rawCode > 0) {
+      sendRawCommand(rawCode);
+    }
+    return;
+  }
+
+  byte index = atoi(data.c_str());
+  sendIndexedCommand(index);
+}
+
 void serialCommand(){
   //--------------------Serial Command-----------------    
 
@@ -314,30 +356,11 @@ void serialCommand(){
  {
   if(Serial.available()){
    data1 = Serial.readString();
-   byte i = atoi(data1.c_str());
-
-  if(i <= 11){
-    for(byte k = 0; k < 5; k++){
-        Serial.println(Code[i]);
-        bot.buttonwrite(Code[i],3);         
-    }
-  }else{
-     Serial.println(Code[i]);
-     bot.buttonwrite(Code[i],3);        
-    }
+   handleIncomingCommand(data1);
   }
   if(mySerial.available()){
     data0 = mySerial.readString();
-    byte ir = atoi(data0.c_str()); 
-    if(ir <= 11){
-      for(byte k = 0; k < 5; k++){
-        Serial.println(Code[ir]);
-        bot.buttonwrite(Code[ir],3);         
-    }
-  }else{
-        Serial.println(Code[ir]);
-        bot.buttonwrite(Code[ir],3);          
-    }
+    handleIncomingCommand(data0);
   }
         
  }  

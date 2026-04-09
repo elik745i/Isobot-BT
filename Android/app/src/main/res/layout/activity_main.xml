@@ -10,19 +10,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="16dp">
 
-        <TextView
-            android:id="@+id/titleText"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textColor="@color/ink"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/titleText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/app_name"
+                android:textColor="@color/ink"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/settingsButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/settings"
+                android:padding="10dp"
+                android:src="@android:drawable/ic_menu_manage"
+                app:tint="@color/ink" />
+        </LinearLayout>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:text="@string/subtitle"
@@ -42,7 +60,44 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/panel_background"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/model_preview"
+                android:textColor="@color/ink"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@string/model_preview_hint"
+                android:textColor="@color/ink_muted"
+                android:textSize="13sp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="320dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/status_background">
+
+                <android.webkit.WebView
+                    android:id="@+id/modelPreviewWebView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:background="@drawable/panel_background"
             android:orientation="vertical"
             android:padding="16dp">
@@ -61,35 +116,26 @@
                 android:layout_marginTop="10dp"
                 android:backgroundTint="@color/accent" />
 
-            <LinearLayout
+            <Button
+                android:id="@+id/refreshDevicesButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:orientation="horizontal">
+                android:text="@string/refresh" />
 
-                <Button
-                    android:id="@+id/refreshDevicesButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/refresh" />
+            <Button
+                android:id="@+id/connectButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/connect" />
 
-                <Button
-                    android:id="@+id/connectButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:text="@string/connect" />
-
-                <Button
-                    android:id="@+id/disconnectButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_weight="1"
-                    android:text="@string/disconnect" />
-            </LinearLayout>
+            <Button
+                android:id="@+id/disconnectButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/disconnect" />
 
             <TextView
                 android:id="@+id/statusText"
@@ -207,36 +253,36 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/filterAll"
                         style="@style/Widget.Isobot.FilterButton"
-                        android:text="@string/filter_all"
-                        android:checkable="true" />
+                        android:checkable="true"
+                        android:text="@string/filter_all" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/filterMovement"
                         style="@style/Widget.Isobot.FilterButton"
                         android:layout_marginStart="8dp"
-                        android:text="@string/filter_movement"
-                        android:checkable="true" />
+                        android:checkable="true"
+                        android:text="@string/filter_movement" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/filterCombat"
                         style="@style/Widget.Isobot.FilterButton"
                         android:layout_marginStart="8dp"
-                        android:text="@string/filter_combat"
-                        android:checkable="true" />
+                        android:checkable="true"
+                        android:text="@string/filter_combat" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/filterSocial"
                         style="@style/Widget.Isobot.FilterButton"
                         android:layout_marginStart="8dp"
-                        android:text="@string/filter_social"
-                        android:checkable="true" />
+                        android:checkable="true"
+                        android:text="@string/filter_social" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/filterShowcase"
                         style="@style/Widget.Isobot.FilterButton"
                         android:layout_marginStart="8dp"
-                        android:text="@string/filter_showcase"
-                        android:checkable="true" />
+                        android:checkable="true"
+                        android:text="@string/filter_showcase" />
                 </LinearLayout>
             </HorizontalScrollView>
 

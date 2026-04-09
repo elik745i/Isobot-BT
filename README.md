@@ -2,43 +2,77 @@
 
 ![BT-SOBOT mod v1](docs/images/bt-sobot-mod-v1-left.jpeg)
 
-This is sketch and libraries for Arduino Nano v3: https://www.aliexpress.com/item/32714947583.html?spm=a2g0o.productlist.0.0.405cd8828XKa1p&algo_pvid=d5acb32c-9e68-486c-9ca1-a061c698f223&algo_expid=d5acb32c-9e68-486c-9ca1-a061c698f223-0&btsid=0b0a556e16086289564812820e28d6&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_
+This repository contains the Arduino Nano firmware, helper library, and native Android controller app for the BT-enabled I-Sobot / BT-SOBOT mod.
 
-BT module -  HC-05: https://www.aliexpress.com/item/32990347631.html?spm=a2g0o.productlist.0.0.6c79684fOQjVLp&algo_pvid=1c5ce035-6a55-470d-a332-4e84a76d1614&algo_expid=1c5ce035-6a55-470d-a332-4e84a76d1614-2&btsid=0b0a555f16086288928425414e2b6b&ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_
-which is hooked to arduino's digital pins 3,4
-Arduino, BT module powered streight from Li-Ion battery from old SAMSUNG phone, which fits perfectly on isobot body.
-Charging is done by charge&protection board: https://www.aliexpress.com/item/32986135934.html?srcSns=sns_WhatsApp&spreadType=socialShare&bizType=ProductDetail&social_params=40004855740&tt=MG&aff_platform=default&sk=_9ApnQR&aff_trace_key=b6b76121cb7547e4ad30e09c9223ffed-1608628871152-00981-_9ApnQR&shareId=40004855740&businessType=ProductDetail&platform=AE&terminal_id=3e952a3a07934284b8c43999900503f5
+## Hardware
 
-In order to be able to program board and use robot's power switch, wire is soldered to switch's top contact and hooked to negative pole of arduino power supply through NPN (BC456) transistor through 1k resistor. 
-This is kinda electronic switch so Arduino and BT module gets enough voltage.
-Phototransmitting diod taken from old TV remote and is hooked to Arduino's digital pin 5.
+- Arduino Nano v3
+- HC-05 Bluetooth module on digital pins `3` and `4`
+- IR LED on digital pin `5`
+- Li-Ion battery and charge/protection board mounted inside the robot body
 
-For front cover 3D model (STL file) go to: https://www.thingiverse.com/thing:4692748
+The firmware sends the same IR codes as the original remote, while the Android app talks to the HC-05 over classic Bluetooth SPP.
 
-Video demonstration of the modified fully functional robot: https://www.youtube.com/watch?v=bPYBV43UScA
+## Firmware
 
-Control is done by sending command over BT serial: 0 to 138
+Primary sketch:
+`ISOBOT_BT_V1.2/ISOBOT_BT_V1.2.ino`
 
-## Android controller app
+What it supports:
 
-This repository now also contains a native Android app project in `Android/` that connects to the HC-05 module over classic Bluetooth SPP and sends the same command indices used by the Arduino sketch.
+- indexed robot actions `0..138`
+- repeated transmission for quick movement commands `0..11`
+- raw service commands via `RAW:<ir-code>`
+- T-pose calibration support inferred from the original remote sequence `4,4,4,B`
 
-### What the app does
+## Android App
 
-- lists already paired Bluetooth devices
-- connects to the HC-05 serial profile
-- provides quick movement buttons for commands 0 to 11
-- exposes the full command catalog 0 to 138 from the sketch
-- includes a searchable categorized GUI for movement, combat, social, and showcase commands
+Android project:
+`Android/`
 
-### Build notes
+Current Android release line:
+`v1.1.0`
 
-- open the `Android/` folder as an Android Studio project, or run the Gradle wrapper from inside `Android/`
-- pair the phone with the HC-05 module first in Android Bluetooth settings
-- once connected in the app, each button sends the command number followed by a newline, which matches the Arduino sketch's serial input handling
-- release builds read signing values from `Android/keystore.properties` or from `ISOBOT_*` environment variables
+Highlights:
 
-### Repository release asset
+- paired HC-05 device picker
+- quick controls and full command catalog
+- categorized search/filter UI
+- bundled 3D robot preview
+- bundled in-app PDF manual viewer for `Actions.pdf` and `Service_Manual.pdf`
+- settings menu with T-pose servo-adjust action
+- phone-friendly stacked layout and larger launcher icon
 
-- the signed Android release APK is published through the repository's GitHub Releases section
-- build output path after a local release build: `Android/app/build/outputs/apk/release/app-release.apk`
+## Build Notes
+
+Android:
+
+- open `Android/` in Android Studio or run the Gradle wrapper there
+- release builds read signing values from `Android/keystore.properties` or `ISOBOT_*` environment variables
+- release APK output:
+  `Android/app/build/outputs/apk/release/app-release.apk`
+
+Arduino:
+
+- board: Arduino Nano
+- upload target that worked for this hardware:
+  `arduino:avr:nano:cpu=atmega328old`
+
+## End-To-End Notes
+
+- pair the phone with the HC-05 first in Android Bluetooth settings
+- install the matching Android APK and Arduino firmware together
+- the Android T-pose action requires the updated firmware because it uses the `RAW:` serial path
+
+## Release History
+
+- `v1.1.0`
+  - Android controller polish pass with embedded manuals, 3D preview, responsive layout, settings menu, and T-pose support
+  - firmware updated to accept `RAW:<ir-code>` messages for service actions
+- `v1.0.0`
+  - initial Android controller release
+
+## Media
+
+- front cover STL model: https://www.thingiverse.com/thing:4692748
+- demonstration video: https://www.youtube.com/watch?v=bPYBV43UScA

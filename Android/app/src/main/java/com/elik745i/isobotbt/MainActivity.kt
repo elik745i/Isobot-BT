@@ -7,17 +7,28 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothSocket
 import android.content.pm.PackageManager
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.MotionEvent
+import android.webkit.MimeTypeMap
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ArrayAdapter
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.webkit.WebViewAssetLoader
 import com.elik745i.isobotbt.databinding.ActivityMainBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.IOException
 import java.util.UUID
 
@@ -32,6 +43,13 @@ class MainActivity : AppCompatActivity() {
     private var socket: BluetoothSocket? = null
     private var selectedCategory: CommandCategory = CommandCategory.ALL
     private val commandAdapter = CommandAdapter(::sendCommand)
+    // Inferred from the original remote service sequence 4,4,4,B.
+    private val tPoseRawCode = 786876L
+    private val assetLoader by lazy {
+        WebViewAssetLoader.Builder()
+            .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this))
+            .build()
+    }
 
     private val permissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { _ ->
@@ -43,6 +61,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupModelPreview()
         setupCommandList()
         setupQuickButtons()
         setupActions()
@@ -60,11 +79,44 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        binding.modelPreviewWebView.destroy()
         closeSocket()
         super.onDestroy()
     }
 
+    private fun setupModelPreview() {
+        with(binding.modelPreviewWebView) {
+            setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            webChromeClient = WebChromeClient()
+            webViewClient = object : WebViewClient() {
+                override fun shouldInterceptRequest(
+                    view: WebView,
+                    request: WebResourceRequest,
+                ): WebResourceResponse? = assetLoader.shouldInterceptRequest(request.url)
+            }
+            settings.javaScriptEnabled = true
+            settings.domStorageEnabled = true
+            settings.loadsImagesAutomatically = true
+            settings.mediaPlaybackRequiresUserGesture = false
+            overScrollMode = WebView.OVER_SCROLL_NEVER
+            isVerticalScrollBarEnabled = false
+            isHorizontalScrollBarEnabled = false
+            setOnTouchListener { view, event ->
+                when (event.actionMasked) {
+                    MotionEvent.ACTION_DOWN,
+                    MotionEvent.ACTION_MOVE -> view.parent?.requestDisallowInterceptTouchEvent(true)
+                    MotionEvent.ACTION_UP,
+                    MotionEvent.ACTION_CANCEL -> view.parent?.requestDisallowInterceptTouchEvent(false)
+                }
+                false
+            }
+            loadUrl("https://appassets.androidplatform.net/assets/viewer/viewer.html")
+        }
+    }
+
     private fun setupActions() {
+        binding.settingsButton.setOnClickListener { showSettingsMenu() }
+
         binding.refreshDevicesButton.setOnClickListener {
             ensurePermissionsAndRefresh()
         }
@@ -87,6 +139,50 @@ class MainActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) = Unit
         })
+    }
+
+    private fun showSettingsMenu() {
+        PopupMenu(this, binding.settingsButton).apply {
+            menu.add(0, 1, 0, R.string.settings_t_pose)
+            menu.add(0, 2, 1, R.string.manual_actions)
+            menu.add(0, 3, 2, R.string.manual_service)
+            setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    1 -> {
+                        showTPoseDialog()
+                        true
+                    }
+                    2 -> {
+                        openManualFromAssets("manuals/Actions.pdf", "Actions.pdf")
+                        true
+                    }
+                    3 -> {
+                        openManualFromAssets("manuals/Service_Manual.pdf", "Service_Manual.pdf")
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }.show()
+    }
+
+    private fun showTPoseDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.settings_t_pose)
+            .setMessage(R.string.settings_t_pose_message)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.send) { _, _ ->
+                sendRawCommand(tPoseRawCode, getString(R.string.status_t_pose_sent))
+            }
+            .show()
+    }
+
+    private fun openManualFromAssets(assetPath: String, outputName: String) {
+        startActivity(
+            Intent(this, PdfViewerActivity::class.java)
+                .putExtra(PdfViewerActivity.EXTRA_ASSET_PATH, assetPath)
+                .putExtra(PdfViewerActivity.EXTRA_TITLE, outputName),
+        )
     }
 
     private fun setupCommandList() {
@@ -236,7 +332,7 @@ class MainActivity : AppCompatActivity() {
             try {
                 closeSocket()
                 bluetoothAdapter?.cancelDiscovery()
-                socket = device.createRfcommSocketToServiceRecord(serialUuid).apply { connect() }
+                socket = connectSocket(device)
 
                 runOnUiThread {
                     setBusy(false)
@@ -265,6 +361,58 @@ class MainActivity : AppCompatActivity() {
                 currentSocket.outputStream.flush()
                 runOnUiThread {
                     setStatus(getString(R.string.status_sent, command.index, command.label))
+                }
+            } catch (error: IOException) {
+                closeSocket()
+                runOnUiThread {
+                    setStatus(getString(R.string.status_send_failed, error.localizedMessage ?: "I/O error"))
+                }
+            }
+        }.start()
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun connectSocket(device: BluetoothDevice): BluetoothSocket {
+        val attempts = listOfNotNull(
+            runCatching { device.createRfcommSocketToServiceRecord(serialUuid) }.getOrNull(),
+            runCatching { device.createInsecureRfcommSocketToServiceRecord(serialUuid) }.getOrNull(),
+            runCatching {
+                @Suppress("UNCHECKED_CAST")
+                device.javaClass.getMethod("createRfcommSocket", Int::class.javaPrimitiveType)
+                    .invoke(device, 1) as BluetoothSocket
+            }.getOrNull(),
+        )
+
+        var lastError: IOException? = null
+        attempts.forEach { candidate ->
+            try {
+                candidate.connect()
+                return candidate
+            } catch (error: IOException) {
+                lastError = error
+                try {
+                    candidate.close()
+                } catch (_: IOException) {
+                }
+            }
+        }
+
+        throw lastError ?: IOException("Unable to open Bluetooth socket")
+    }
+
+    private fun sendRawCommand(rawCode: Long, successMessage: String) {
+        val currentSocket = socket
+        if (currentSocket == null || !currentSocket.isConnected) {
+            toast(getString(R.string.status_not_connected))
+            return
+        }
+
+        Thread {
+            try {
+                currentSocket.outputStream.write("RAW:$rawCode\n".toByteArray())
+                currentSocket.outputStream.flush()
+                runOnUiThread {
+                    setStatus(successMessage)
                 }
             } catch (error: IOException) {
                 closeSocket()

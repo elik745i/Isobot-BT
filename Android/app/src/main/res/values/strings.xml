@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">I-Sobot BT Controller</string>
+    <string name="settings">Settings</string>
     <string name="subtitle">Connect to the HC-05 module and send the same command numbers used by the Arduino sketch.</string>
     <string name="hero_copy">Fast controls stay at the top, while the command browser below lets you search every move, gesture, and demo routine from the Arduino firmware.</string>
+    <string name="model_preview">3D robot preview</string>
+    <string name="model_preview_hint">Drag the model to rotate it. This first pass keeps the full body intact so later we can split parts for animation.</string>
+    <string name="settings_t_pose">T-Pose Servo Adjust</string>
+    <string name="settings_help">Help</string>
+    <string name="settings_t_pose_message">Sends the original remote service sequence inferred from 4,4,4,B so you can place the robot in T-pose for servo link adjustment.</string>
+    <string name="help_title">Help &amp; Manuals</string>
+    <string name="help_message">Open one of the original manuals bundled with the APK.</string>
+    <string name="manual_actions">Actions Manual</string>
+    <string name="manual_service">Service Manual</string>
+    <string name="manual_open_failed">No PDF viewer is available on this device.</string>
+    <string name="manual_copy_failed">Could not prepare the manual file.</string>
+    <string name="status_t_pose_sent">Sent T-pose calibration command.</string>
+    <string name="close">Close</string>
+    <string name="previous_page">Previous</string>
+    <string name="next_page">Next</string>
+    <string name="pdf_page">PDF page</string>
+    <string name="pdf_page_indicator">Page %1$d of %2$d</string>
     <string name="paired_devices">Paired Bluetooth devices</string>
     <string name="quick_controls">Quick movement controls</string>
     <string name="all_commands">Full command catalog</string>
